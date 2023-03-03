@@ -1,0 +1,11 @@
+<!--components/song-item/song-item.wxml-->
+<view class="item" bindtap="onSongItemTap">
+    <image class="image" src="{{itemData.al.picUrl}}" mode=""/>
+    <view class="info">
+        <view class="name">{{itemData.name}}</view>
+        <view class="singer">{{itemData.ar[0].name}}</view>
+    </view>
+    <view class="arrow">
+        <van-icon name="arrow" color="#999" size="16px" />
+    </view>
+</view>

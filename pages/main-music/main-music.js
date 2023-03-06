@@ -22,7 +22,10 @@ Page({
         recMenuList: [],
 
         isRankingData: false,
-        rankingInfos: {}
+        rankingInfos: {},
+
+        currentSong: {},
+        isPlaying: false
     },
     onLoad() {
         this.fetchMusicBanner()
@@ -42,6 +45,8 @@ Page({
         rankingStore.onState("originRanking",this.getRankingHanlder("originRanking"))
         rankingStore.onState("upRanking",this.getRankingHanlder("upRanking"))
         rankingStore.dispatch("fetchRankingDataAction")
+
+        playerStore.onStates(["currentSong","isPlaying"],this.handlePlayInfos)
 
         this.setData({screenWidth: app.globalData.screenWidth})
     },
@@ -67,6 +72,11 @@ Page({
         playerStore.setState("playerSongList",this.data.recommendSongs)
         playerStore.setState("playerSongIndex",event.currentTarget.dataset.index)
     },
+    onPlayBarAlbumTap(){
+        wx.navigateTo({
+          url: '/packagePlayer/pages/music-player/music-player',
+        })
+    },
     async fetchMusicBanner() {
         const res = await getMusicBanner()
         this.setData({ banners: res.banners })
@@ -89,6 +99,9 @@ Page({
     handleRecommendSongs(value) {
         if(!value.tracks) return
         this.setData({ recommendSongs: value.tracks.slice(0,6) })
+    },
+    onPlayOrPauseBtnTap() {
+        playerStore.dispatch("playMusicStatusAction")
     },
     // handleNewRanking(value) {
     //     const newRankingInfos = {...this.data.rankingInfos, newRanking: value}
@@ -118,6 +131,14 @@ Page({
             })
         }
     },
+    handlePlayInfos({currentSong,isPlaying}) {
+        if(currentSong){
+            this.setData({currentSong})
+        }
+        if(isPlaying !== undefined){
+            this.setData({isPlaying})
+        }
+    },
 
     onUnload() {
         recommendStore.offState("recommendSonginfo", this.handleRecommendSongs)
@@ -130,5 +151,7 @@ Page({
         // for(const key in rankingsIds) {
         //     rankingStore.offState(key, this.getRankingHanlder(key))
         // }
+
+        playerStore.offStates(["currentSong","isPlaying"],this.handlePlayInfos)
     }
 })

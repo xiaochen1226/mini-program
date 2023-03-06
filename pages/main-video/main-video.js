@@ -1,5 +1,6 @@
 // pages/main-video/main-video.js
 import { getTopMV } from '../../services/video'
+import playerStore from '../../store/playerStore'
 
 Page({
     data: {
@@ -32,8 +33,9 @@ Page({
 
     onVideoItemTap(event) {
         const item = event.currentTarget.dataset.item
+        playerStore.dispatch("playMusicStatusAction")
         wx.navigateTo({
-          url: `/pages/detail-vedio/detail-vedio?id=${item.id}`,
+          url: `/packageVideo/pages/detail-vedio/detail-vedio?id=${item.id}`,
         })
     }
 })
